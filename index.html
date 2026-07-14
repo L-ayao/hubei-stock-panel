@@ -836,6 +836,45 @@ body {
 .city-stat-mcap{font-size:12px;color:#2ea8e0;font-weight:600}
 @media(max-width:860px){.city-map-container{flex-direction:column}.city-map-chart{height:350px}.city-map-stats{width:100%;flex-direction:row;flex-wrap:wrap;max-height:none}.city-stat-card{flex:1;min-width:150px}}
 
+
+.dash-card-icon.teal { background:linear-gradient(135deg,#0d9488,#14b8a6); }
+.dash-card-btn.teal-btn { background:linear-gradient(135deg,#0d9488,#14b8a6); }
+.clue-region-tag { padding:5px 14px;border-radius:16px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--card-bg);color:var(--text);transition:all .15s; }
+.clue-region-tag:hover { border-color:var(--accent);color:var(--accent); }
+.clue-region-tag.active { background:var(--accent);color:#fff;border-color:var(--accent); }
+.clue-company-item { display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;transition:all .15s;background:var(--card-bg); }
+.clue-company-item:hover { border-color:var(--accent);background:rgba(59,130,246,0.05); }
+.clue-company-item.selected { background:rgba(59,130,246,0.1);border-color:var(--accent); }
+.clue-selected-chip { display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;font-size:12px;background:rgba(59,130,246,0.1);color:var(--accent);border:1px solid rgba(59,130,246,0.3); }
+.clue-selected-chip .remove { cursor:pointer;font-weight:bold;opacity:.6; }
+.clue-selected-chip .remove:hover { opacity:1; }
+/* Report preview styles */
+.clue-report-header { background:linear-gradient(120deg,#0a3c8c,#1565c0);color:#fff;border-radius:14px;padding:24px 30px;box-shadow:0 6px 18px rgba(10,60,140,.16);margin-bottom:16px; }
+.clue-report-header h1 { margin:0 0 6px;font-size:22px;letter-spacing:.5px; }
+.clue-report-header .meta { font-size:12.5px;opacity:.92; }
+.clue-report-header .tag { display:inline-block;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:16px;margin:6px 6px 0 0;font-size:11.5px; }
+.clue-kpis { display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0; }
+.clue-kpi { background:#fff;border:1px solid #e6ebf2;border-radius:12px;padding:14px;text-align:center; }
+.clue-kpi .v { font-size:24px;font-weight:700;color:#0a3c8c; }
+.clue-kpi .l { font-size:12.5px;color:#6b7280; }
+.clue-section { background:#fff;border:1px solid #e6ebf2;border-radius:12px;padding:18px 20px;margin:14px 0; }
+.clue-section h2 { font-size:18px;margin:0 0 12px;padding-left:11px;border-left:4px solid #0a3c8c; }
+.clue-section h3 { font-size:14.5px;color:#1565c0;margin:16px 0 8px; }
+.clue-note { font-size:12.5px;color:#6b7280;background:#f3f6fb;border-radius:8px;padding:9px 11px;margin:6px 0 12px; }
+.clue-table { border-collapse:collapse;width:100%;font-size:13px; }
+.clue-table th, .clue-table td { border:1px solid #e6ebf2;padding:6px 9px;text-align:center; }
+.clue-table th { background:#eef3fb;color:#0a3c8c;font-weight:600; }
+.clue-table td.l, .clue-table th.l { text-align:left; }
+.clue-table tbody tr:nth-child(even) { background:#fafcff; }
+.clue-hi { background:#fdeaea;color:#d23f3f;font-weight:700; }
+.clue-mid { background:#fff6e6; }
+.clue-lo { background:#f3faf5; }
+.clue-chain { border:1px solid #e6ebf2;border-radius:10px;padding:12px 14px;margin:10px 0;break-inside:avoid; }
+.clue-chain .ct { font-weight:700;color:#0a3c8c;font-size:14.5px; }
+.clue-chain .mp { font-size:12px;color:#6b7280;margin:3px 0 8px; }
+.clue-ann-link { color:#1565c0;text-decoration:none;border-bottom:1px dashed #1565c0;cursor:pointer; }
+.clue-ann-link:hover { color:#d23f3f;border-bottom-style:solid; }
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
@@ -931,6 +970,18 @@ body {
         </div>
         <button class="dash-card-btn pink-btn" onclick="event.stopPropagation();openModule('overview')">启 动 · LAUNCH</button>
       </div>
+      <div class="dash-card" onclick="openModule('clueReport')">
+        <div class="dash-card-icon teal">🗂️</div>
+        <div class="dash-card-title">机构业务线索报告</div>
+        <div class="dash-card-eng">CLUE REPORT GENERATOR</div>
+        <div class="dash-card-desc">按公司或地区批量生成<br>机构业务线索分析报告 · 热力图 · CSV导出</div>
+        <div class="dash-card-tags">
+          <span class="dash-card-tag">报告生成</span>
+          <span class="dash-card-tag">热力图</span>
+          <span class="dash-card-tag">业务线索</span>
+        </div>
+        <button class="dash-card-btn teal-btn" onclick="event.stopPropagation();openModule('clueReport')">启 动 · LAUNCH</button>
+      </div>
     </div>
   </div>
 
@@ -939,7 +990,7 @@ body {
     <div class="dash-statusbar-left">
       <span><span class="dash-status-dot online"></span>系统在线</span>
       <span><span class="dash-status-dot sync"></span>数据同步</span>
-      <span id="dash-module-count">5个模块已就绪</span>
+      <span id="dash-module-count">6个模块已就绪</span>
     </div>
     <div class="dash-statusbar-right">
       <span>公告数据：2021-2026 · 155家上市公司</span>
@@ -1160,7 +1211,68 @@ body {
 </div>
 
 
-<!-- ==================== DETAIL OVERLAY & SCRIPTS ==================== -->
+
+<!-- Overlay: 机构业务线索报告生成器 -->
+<div class="module-overlay" id="module-clueReport">
+  <div class="module-overlay-header">
+    <div class="module-overlay-title">🗂️ 机构业务线索报告生成器</div>
+    <button class="module-overlay-close" onclick="closeModule('clueReport')">✕ 关闭</button>
+  </div>
+  <div class="module-overlay-body">
+<div class="tab-content" id="tab-clueReport">
+
+  <!-- Step 1: Selection -->
+  <div id="clue-step1" style="margin-bottom:20px;">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">📋 第一步：选择目标公司</h3>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">通过搜索选择上市公司，或按地区批量选择。选好后点击"生成报告"。</p>
+
+    <!-- Region quick-select -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">📍 按地区批量选择：</div>
+      <div id="clue-region-tags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <!-- Search box -->
+    <div style="margin-bottom:12px;">
+      <input type="text" id="clue-search-input" placeholder="搜索公司名称/代码/拼音简称..." 
+        oninput="clueSearchFilter()" onkeydown="if(event.key==='Enter')clueSearchFilter()"
+        style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--card-bg);color:var(--text);outline:none;">
+    </div>
+
+    <!-- Search results -->
+    <div id="clue-search-results" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:16px;display:none;"></div>
+
+    <!-- Selected companies -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;">✅ 已选择 <span id="clue-selected-count" style="color:var(--accent);">0</span> 家公司</span>
+        <button onclick="clueClearSelection()" style="font-size:12px;color:var(--text-secondary);background:none;border:none;cursor:pointer;text-decoration:underline;">清除全部</button>
+      </div>
+      <div id="clue-selected-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:8px;border:1px dashed var(--border);border-radius:8px;"></div>
+    </div>
+
+    <!-- Generate button -->
+    <button onclick="generateClueReport()" style="background:var(--accent);color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+      📊 生成机构业务线索报告
+    </button>
+  </div>
+
+  <!-- Step 2: Report -->
+  <div id="clue-step2" style="display:none;">
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+      <button onclick="clueBackToSelect()" style="background:var(--card-bg);color:var(--text);border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;">↩ 重新选择</button>
+      <button onclick="clueDownloadReport()" style="background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;">📥 下载HTML报告</button>
+      <button onclick="cluePrintReport()" style="background:var(--accent2);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;">🖨️ 打印/PDF</button>
+      <button onclick="clueExportCSV()" style="background:#1f9d57;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;">📄 导出CSV</button>
+    </div>
+    <div id="clue-report-container" style="background:#f6f8fb;border-radius:12px;padding:20px;overflow:auto;"></div>
+  </div>
+
+</div>
+  </div>
+</div>
+
+<!-- ==================== DETAIL OVERLAY & SCRIPTS =================== -->
 <!-- ==================== Detail Overlay ==================== -->
 <div class="detail-overlay" id="detail-overlay">
   <div class="detail-panel" id="detail-panel"></div>
@@ -4706,6 +4818,7 @@ function openModule(tab) {
     requestAnimationFrame(function() { renderAnnouncements(currentAnnounceFilter); }); 
   }
   else if (tab === 'comparable') requestAnimationFrame(function() { initComparableTab(); });
+  else if (tab === 'clueReport') initClueReport();
 }
 
 function closeModule(tab) {
@@ -4716,6 +4829,404 @@ function closeModule(tab) {
 
 window.openModule = openModule;
 window.closeModule = closeModule;
+
+
+// ===== Clue Report Generator =====
+var clueSelectedCompanies = [];
+var clueReportHTML = '';
+
+function initClueReport() {
+  // Populate region tags
+  var regions = {};
+  if (typeof COMPANY_CITY !== 'undefined') {
+    Object.values(COMPANY_CITY).forEach(function(c) { regions[c] = (regions[c]||0)+1; });
+  }
+  var regionHtml = Object.keys(regions).sort().map(function(r) {
+    return '<span class="clue-region-tag" onclick="clueToggleRegion(this,\''+r+'\')">'+r+' ('+regions[r]+')</span>';
+  }).join('');
+  var regionContainer = document.getElementById('clue-region-tags');
+  if (regionContainer) regionContainer.innerHTML = regionHtml;
+  clueUpdateSelectedDisplay();
+}
+
+function clueToggleRegion(el, region) {
+  el.classList.toggle('active');
+  var companies = [];
+  if (typeof COMPANY_CITY !== 'undefined') {
+    Object.keys(COMPANY_CITY).forEach(function(c) {
+      if (COMPANY_CITY[c] === region) companies.push(c);
+    });
+  }
+  if (el.classList.contains('active')) {
+    companies.forEach(function(c) {
+      if (!clueSelectedCompanies.includes(c)) clueSelectedCompanies.push(c);
+    });
+  } else {
+    clueSelectedCompanies = clueSelectedCompanies.filter(function(c) { return COMPANY_CITY[c] !== region; });
+  }
+  clueUpdateSelectedDisplay();
+}
+
+function clueSearchFilter() {
+  var input = document.getElementById('clue-search-input');
+  var val = (input ? input.value.toLowerCase().trim() : '');
+  var results = document.getElementById('clue-search-results');
+  if (!val) { results.style.display = 'none'; results.innerHTML = ''; return; }
+  
+  var allCompanies = Object.keys(window.COMPANY_FINANCE || {});
+  var filtered = allCompanies.filter(function(c) {
+    var code = (window.COMPANY_FINANCE[c] && window.COMPANY_FINANCE[c].code) || '';
+    var pinyin = (typeof COMPANY_PINYIN !== 'undefined' && COMPANY_PINYIN[c]) || '';
+    return c.toLowerCase().includes(val) || code.toLowerCase().includes(val) || pinyin.toLowerCase().includes(val);
+  }).slice(0, 50);
+  
+  if (filtered.length === 0) {
+    results.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary);">无匹配公司</div>';
+  } else {
+    results.innerHTML = filtered.map(function(c) {
+      var fin = window.COMPANY_FINANCE[c] || {};
+      var ind = (typeof window.COMPANY_INDUSTRY !== 'undefined' && window.COMPANY_INDUSTRY[c]) || '其他';
+      var city = (typeof COMPANY_CITY !== 'undefined' && COMPANY_CITY[c]) || '';
+      var isSelected = clueSelectedCompanies.includes(c);
+      return '<div class="clue-company-item'+(isSelected?' selected':'')+'" onclick="clueToggleCompany(\''+c+'\')">'+
+        '<span style="font-weight:600;">'+c+'</span>'+
+        '<span style="color:var(--text-secondary);font-size:11px;">'+(fin.code||'')+'</span>'+
+        '<span style="color:var(--text-secondary);font-size:11px;">'+ind+'</span>'+
+        '<span style="color:var(--text-secondary);font-size:11px;">'+city+'</span>'+
+        (isSelected ? '<span style="color:var(--accent);">✓</span>' : '')+
+        '</div>';
+    }).join('');
+  }
+  results.style.display = 'block';
+}
+
+function clueToggleCompany(c) {
+  var idx = clueSelectedCompanies.indexOf(c);
+  if (idx >= 0) {
+    clueSelectedCompanies.splice(idx, 1);
+  } else {
+    clueSelectedCompanies.push(c);
+  }
+  clueUpdateSelectedDisplay();
+  clueSearchFilter();
+}
+
+function clueClearSelection() {
+  clueSelectedCompanies = [];
+  document.querySelectorAll('.clue-region-tag.active').forEach(function(el) { el.classList.remove('active'); });
+  clueUpdateSelectedDisplay();
+  clueSearchFilter();
+}
+
+function clueUpdateSelectedDisplay() {
+  var countEl = document.getElementById('clue-selected-count');
+  if (countEl) countEl.textContent = clueSelectedCompanies.length;
+  var listEl = document.getElementById('clue-selected-list');
+  if (listEl) {
+    if (clueSelectedCompanies.length === 0) {
+      listEl.innerHTML = '<span style="color:var(--text-secondary);font-size:12px;padding:4px;">尚未选择公司，请搜索或按地区选择</span>';
+    } else {
+      listEl.innerHTML = clueSelectedCompanies.map(function(c) {
+        return '<span class="clue-selected-chip">'+c+' <span class="remove" onclick="clueToggleCompany(\''+c+'\')">✕</span></span>';
+      }).join('');
+    }
+  }
+}
+
+// Classify announcement title into business category
+function clueClassify(title) {
+  var t = title || '';
+  if (/股权激励|限制性股票|股票期权|员工持股/.test(t)) return '股权激励/员工持股';
+  if (/回购/.test(t)) return '股份回购';
+  if (/减持|增持|权益变动|股份变动/.test(t)) return '股东增减持';
+  if (/非公开发行|定向增发|定增|可转债|可转换公司债|配股|公开发行.*股票|募集资金.*发行|发行.*股票/.test(t)) return '再融资(定增/可转债/配股)';
+  if (/公司债|中期票据|中票|短期融资券|短融|超短融|永续债|绿色债|乡村振兴债|科创债/.test(t)) return '债券融资';
+  if (/委托理财|现金管理|闲置募集资金|理财产品|闲置自有资金.*投资|自有资金.*理财/.test(t)) return '现金管理/理财';
+  if (/并购|重大资产重组|资产收购|股权收购|资产出售|吸收合并/.test(t)) return '并购重组';
+  if (/利润分配|分红|派息|权益分派|转增|送股/.test(t)) return '分红派息';
+  return null;
+}
+
+var CLUE_CATS = ["股权激励/员工持股", "股份回购", "股东增减持", "再融资(定增/可转债/配股)", "债券融资", "现金管理/理财", "并购重组", "分红派息"];
+var CLUE_W = {"股权激励/员工持股":3,"股份回购":2,"再融资(定增/可转债/配股)":2,"债券融资":1.5,"现金管理/理财":2,"并购重组":1.5,"股东增减持":1,"分红派息":0.5};
+var CLUE_CATMAP = {
+ '股权激励/员工持股':'ESOP 方案设计 / 持股平台 / 解锁后减持交易（省心享·WeFund 定制）',
+ '股份回购':'回购专户 / 回购资金管理 / 资管信托安排',
+ '股东增减持':'大股东·董监高增减持：大宗交易 / 协议转让 / 合规撮合',
+ '再融资(定增/可转债/配股)':'定增·可转债·配股承销 / 研究覆盖 / 机构配售',
+ '债券融资':'公司债·中票等信用债承销与投资策略',
+ '现金管理/理财':'上市公司闲置资金理财（省心投 / 省心选 / 省心享·企业家办公室）',
+ '并购重组':'并购重组财务顾问 / 估值 / 交易结构设计',
+ '分红派息':'分红再投资 / 董监高财富管理'
+};
+
+function clueScore(byCat) {
+  var s = 0;
+  CLUE_CATS.forEach(function(c) { s += (byCat[c]||0) * (CLUE_W[c]||0); });
+  return s;
+}
+
+function generateClueReport() {
+  if (clueSelectedCompanies.length === 0) {
+    alert('请先选择至少一家公司');
+    return;
+  }
+  
+  // Build report data
+  var reportData = [];
+  clueSelectedCompanies.forEach(function(c) {
+    var fin = window.COMPANY_FINANCE[c] || {};
+    var ind = (typeof window.COMPANY_INDUSTRY !== 'undefined' && window.COMPANY_INDUSTRY[c]) || '其他';
+    var city = (typeof COMPANY_CITY !== 'undefined' && COMPANY_CITY[c]) || '未知';
+    var listDate = getListDate(c) || '';
+    var anns = getAllCompanyAnnouncements(c);
+    
+    var byCat = {};
+    var leads = [];
+    anns.forEach(function(a) {
+      var cat = clueClassify(a.title);
+      if (cat) {
+        byCat[cat] = (byCat[cat]||0) + 1;
+        leads.push({ title: a.title, date: a.date, year: a._year || a.date.substring(0,4), cat: cat, cninfoUrl: a.link || '' });
+      }
+    });
+    
+    reportData.push({
+      name: c,
+      code: fin.code || '',
+      full: c,
+      district: city,
+      industry: ind,
+      marketCap: fin.marketCap || 0,
+      netProfit: fin.netProfit || 0,
+      pe: fin.pe || 0,
+      pb: fin.pb || 0,
+      listing: listDate,
+      annTotal: anns.length,
+      leadCount: leads.length,
+      byCat: byCat,
+      leads: leads
+    });
+  });
+  
+  // Sort by market cap desc
+  reportData.sort(function(a,b) { return (b.marketCap||0) - (a.marketCap||0); });
+  
+  // Generate report HTML
+  var totalMC = reportData.reduce(function(s,d) { return s + (parseFloat(d.marketCap)||0); }, 0);
+  var totalLead = reportData.reduce(function(s,d) { return s + d.leadCount; }, 0);
+  var districts = new Set(reportData.map(function(d) { return d.district; }));
+  var now = new Date();
+  var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  var regionLabel = districts.size > 1 ? '湖北多地区' : Array.from(districts)[0];
+  
+  var html = '';
+  // Header
+  html += '<div class="clue-report-header">';
+  html += '<h1>'+regionLabel+'上市公司机构业务线索报告</h1>';
+  html += '<div class="meta">数据期 2021–2026 公告 · 样本 '+reportData.length+' 家 A 股上市公司 · 生成 '+dateStr+'</div>';
+  html += '<div style="margin-top:8px">';
+  html += '<span class="tag">机构业务条线</span>';
+  html += '<span class="tag">股权激励 / 回购 / 增减持 / 再融资 / 理财 / 并购</span>';
+  html += '<span class="tag">屏显互动 + 打印完整</span>';
+  html += '</div></div>';
+  
+  // KPIs
+  html += '<div class="clue-kpis">';
+  html += '<div class="clue-kpi"><div class="v">'+reportData.length+' 家</div><div class="l">上市公司</div></div>';
+  html += '<div class="clue-kpi"><div class="v">'+districts.size+' 个</div><div class="l">覆盖区县</div></div>';
+  html += '<div class="clue-kpi"><div class="v">≈'+totalMC.toFixed(0)+' 亿</div><div class="l">合计市值</div></div>';
+  html += '<div class="clue-kpi"><div class="v">'+totalLead+' 条</div><div class="l">机构相关公告</div></div>';
+  html += '</div>';
+  
+  // Section 1: Company Profile
+  html += '<div class="clue-section"><h2>一、公司画像总览</h2>';
+  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>代码</th><th class="l">简称</th><th>区县</th><th>行业</th><th>市值(亿)</th><th>净利(亿)</th><th>上市日期</th><th>线索</th><th>评分</th></tr></thead><tbody>';
+  reportData.forEach(function(d) {
+    var np = parseFloat(d.netProfit);
+    var npc = np < 0 ? 'style="color:#d23f3f"' : '';
+    html += '<tr><td>'+d.code+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.district+'</td><td>'+d.industry+'</td><td>'+d.marketCap+'</td><td '+npc+'>'+np.toFixed(2)+'</td><td>'+d.listing+'</td><td><b>'+d.leadCount+'</b></td><td>'+clueScore(d.byCat).toFixed(0)+'</td></tr>';
+  });
+  html += '</tbody></table></div></div>';
+  
+  // Section 2: Heatmap matrix
+  html += '<div class="clue-section"><h2>二、机构业务线索热力分布</h2>';
+  html += '<div class="clue-note">计数 = 该公司在对应业务线命中关键词的公告条数（历年去重）。颜色越深线索越密。</div>';
+  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th class="l">公司＼业务线</th>';
+  CLUE_CATS.forEach(function(c) { html += '<th>'+c+'</th>'; });
+  html += '<th>合计</th></tr></thead><tbody>';
+  reportData.forEach(function(d) {
+    html += '<tr><td class="l"><b>'+d.name+'</b> <span style="color:#6b7280;font-size:10px">'+d.district+'</span></td>';
+    var s = 0;
+    CLUE_CATS.forEach(function(c) {
+      var v = d.byCat[c] || 0;
+      s += v;
+      var cls = v >= 30 ? 'clue-hi' : (v >= 10 ? 'clue-mid' : (v > 0 ? 'clue-lo' : ''));
+      html += '<td class="'+cls+'">'+(v||'')+'</td>';
+    });
+    html += '<td><b>'+s+'</b></td></tr>';
+  });
+  html += '</tbody></table></div></div>';
+  
+  // Section 3: Focus companies
+  html += '<div class="clue-section"><h2>三、重点商机速览（按机构业务契合度排序）</h2>';
+  var topN = reportData.slice().sort(function(a,b) { return clueScore(b.byCat) - clueScore(a.byCat); }).slice(0, Math.min(10, reportData.length));
+  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>排名</th><th class="l">公司</th><th>代码</th><th>市值(亿)</th><th>主导业务线</th><th>线索</th><th>评分</th><th class="l">机构切入点</th></tr></thead><tbody>';
+  topN.forEach(function(d, i) {
+    var best = '', bv = -1;
+    CLUE_CATS.forEach(function(c) {
+      var sc = (d.byCat[c]||0) * (CLUE_W[c]||0);
+      if (sc > bv) { bv = sc; best = c; }
+    });
+    html += '<tr><td>'+(i+1)+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.code+'</td><td>'+d.marketCap+'</td><td><b>'+best+'</b></td><td>'+d.leadCount+'</td><td><b>'+clueScore(d.byCat).toFixed(0)+'</b></td><td class="l" style="font-size:12px">'+(CLUE_CATMAP[best]||'')+'</td></tr>';
+  });
+  html += '</tbody></table></div></div>';
+  
+  // Section 4: Category details
+  html += '<div class="clue-section"><h2>四、按业务线拆分的详细线索</h2>';
+  html += '<div class="clue-note">点击公告标题可跳转巨潮资讯查看原文。每条记录为该公司在该业务线最近一次公告。</div>';
+  CLUE_CATS.forEach(function(cat) {
+    var byComp = {};
+    reportData.forEach(function(d) {
+      d.leads.forEach(function(l) {
+        if (l.cat === cat) {
+          if (!byComp[d.name] || l.date > byComp[d.name].date) {
+            byComp[d.name] = { date: l.date, title: l.title, url: l.cninfoUrl };
+          }
+        }
+      });
+    });
+    var rows = Object.keys(byComp).map(function(n) { return { name: n, date: byComp[n].date, title: byComp[n].title, url: byComp[n].url }; }).sort(function(a,b) { return b.date > a.date ? 1 : -1; });
+    
+    html += '<div class="clue-chain"><div class="ct">'+cat+' <span style="color:#6b7280;font-weight:400;font-size:12px">（涉及 '+rows.length+' 家）</span></div>';
+    if (rows.length > 0) {
+      html += '<table class="clue-table"><thead><tr><th class="l">上市公司</th><th>最近公告时间</th><th class="l">公告标题</th></tr></thead><tbody>';
+      rows.forEach(function(r) {
+        var link = r.url ? '<a href="'+r.url+'" target="_blank" class="clue-ann-link" title="点击跳转巨潮资讯查看原文">'+r.title+' 🔗</a>' : r.title;
+        html += '<tr><td class="l"><b>'+r.name+'</b></td><td style="white-space:nowrap">'+r.date+'</td><td class="l">'+link+'</td></tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      html += '<div style="font-size:12px;color:#6b7280;padding:8px 0;">暂无相关公告</div>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  
+  // Footer
+  html += '<div style="font-size:12px;color:#6b7280;text-align:center;margin-top:22px;">报告由湖北上市公司AI工作室 · 机构业务线索报告生成器 自动生成 · '+dateStr+'</div>';
+  
+  // Store for download
+  clueReportHTML = html;
+  clueReportData = reportData;
+  
+  // Display
+  document.getElementById('clue-step1').style.display = 'none';
+  document.getElementById('clue-step2').style.display = 'block';
+  document.getElementById('clue-report-container').innerHTML = html;
+}
+
+var clueReportData = [];
+
+function clueBackToSelect() {
+  document.getElementById('clue-step1').style.display = 'block';
+  document.getElementById('clue-step2').style.display = 'none';
+}
+
+function clueDownloadReport() {
+  var allCompanies = clueSelectedCompanies.join('、');
+  var now = new Date();
+  var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  
+  var fullHTML = '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>'+allCompanies+' 机构业务线索报告 · '+dateStr+'</title>\n<style>\n';
+  fullHTML += ':root{--bg:#f6f8fb;--card:#fff;--ink:#1f2a37;--sub:#6b7280;--line:#e6ebf2;--brand:#0a3c8c;--brand2:#1565c0;--accent:#c79a3a;--red:#d23f3f;--green:#1f9d57;}\n';
+  fullHTML += '*{box-sizing:border-box}\nbody{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px}\n';
+  fullHTML += '.wrap{max-width:1180px;margin:0 auto;padding:22px 18px 60px}\n';
+  // Extract all clue- styles and convert to standard class names
+  var styles = clueReportHTML.match(/<style>([\s\S]*?)<\/style>/);
+  fullHTML += '\n</style>\n</head>\n<body>\n<div class="wrap">\n';
+  // Re-render the report with proper class names (strip clue- prefix)
+  var reportBody = clueReportHTML.replace(/clue-report-header/g, 'report-header')
+    .replace(/clue-kpis/g, 'kpis').replace(/clue-kpi/g, 'kpi')
+    .replace(/clue-section/g, 'section').replace(/clue-note/g, 'note')
+    .replace(/clue-table/g, 't').replace(/clue-hi/g, 'hi').replace(/clue-mid/g, 'mid').replace(/clue-lo/g, 'lo')
+    .replace(/clue-chain/g, 'chain').replace(/clue-ann-link/g, 'ann-link');
+  
+  // Add CSS for the downloaded report
+  fullHTML = '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>'+allCompanies+' 机构业务线索报告</title>\n<style>\n';
+  fullHTML += ':root{--bg:#f6f8fb;--card:#fff;--ink:#1f2a37;--sub:#6b7280;--line:#e6ebf2;--brand:#0a3c8c;--brand2:#1565c0;--accent:#c79a3a;--red:#d23f3f;--green:#1f9d57;}\n';
+  fullHTML += '*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px}\n';
+  fullHTML += '.wrap{max-width:1180px;margin:0 auto;padding:22px 18px 60px}\n';
+  fullHTML += '.report-header{background:linear-gradient(120deg,#0a3c8c,#1565c0);color:#fff;border-radius:14px;padding:24px 30px;box-shadow:0 6px 18px rgba(10,60,140,.16);margin-bottom:16px}\n';
+  fullHTML += '.report-header h1{margin:0 0 6px;font-size:23px;letter-spacing:.5px}.report-header .meta{font-size:12.5px;opacity:.92}.report-header .tag{display:inline-block;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:16px;margin:6px 6px 0 0;font-size:11.5px}\n';
+  fullHTML += '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.kpi .v{font-size:24px;font-weight:700;color:var(--brand)}.kpi .l{font-size:12.5px;color:var(--sub)}\n';
+  fullHTML += 'section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}\n';
+  fullHTML += 'h2{font-size:18px;margin:0 0 12px;padding-left:11px;border-left:4px solid var(--brand)}h3{font-size:14.5px;color:var(--brand2);margin:16px 0 8px}\n';
+  fullHTML += '.note{font-size:12.5px;color:var(--sub);background:#f3f6fb;border-radius:8px;padding:9px 11px;margin:6px 0 12px}\n';
+  fullHTML += '.t{border-collapse:collapse;width:100%;font-size:13px}.t th,.t td{border:1px solid var(--line);padding:6px 9px;text-align:center}.t th{background:#eef3fb;color:var(--brand);font-weight:600}.t td.l,.t th.l{text-align:left}.t tbody tr:nth-child(even){background:#fafcff}\n';
+  fullHTML += '.hi{background:#fdeaea;color:var(--red);font-weight:700}.mid{background:#fff6e6}.lo{background:#f3faf5}\n';
+  fullHTML += '.chain{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0;break-inside:avoid}.chain .ct{font-weight:700;color:var(--brand);font-size:14.5px}.chain .mp{font-size:12px;color:var(--sub);margin:3px 0 8px}\n';
+  fullHTML += '.ann-link{color:var(--brand2);text-decoration:none;border-bottom:1px dashed var(--brand2);cursor:pointer}.ann-link:hover{color:#d23f3f;border-bottom-style:solid}\n';
+  fullHTML += '@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:#fff;font-size:11px}.wrap{max-width:none;padding:0}section{break-inside:avoid}.chain{break-inside:avoid}@page{margin:12mm}}\n';
+  fullHTML += '\n</style>\n</head>\n<body>\n<div class="wrap">\n' + reportBody + '\n</div>\n</body>\n</html>';
+  
+  var blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = allCompanies + '_机构业务线索报告_' + dateStr + '.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function cluePrintReport() {
+  var printWin = window.open('', '_blank');
+  var allCompanies = clueSelectedCompanies.join('、');
+  var now = new Date();
+  var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  
+  var reportBody = clueReportHTML.replace(/clue-report-header/g, 'report-header')
+    .replace(/clue-kpis/g, 'kpis').replace(/clue-kpi/g, 'kpi')
+    .replace(/clue-section/g, 'section').replace(/clue-note/g, 'note')
+    .replace(/clue-table/g, 't').replace(/clue-hi/g, 'hi').replace(/clue-mid/g, 'mid').replace(/clue-lo/g, 'lo')
+    .replace(/clue-chain/g, 'chain').replace(/clue-ann-link/g, 'ann-link');
+  
+  printWin.document.write('<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>'+allCompanies+' 机构业务线索报告</title><style>');
+  printWin.document.write(':root{--bg:#f6f8fb;--card:#fff;--ink:#1f2a37;--sub:#6b7280;--line:#e6ebf2;--brand:#0a3c8c;--brand2:#1565c0;--red:#d23f3f;}*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#fff;color:var(--ink);line-height:1.6;font-size:11px}.wrap{max-width:none;padding:0}.report-header{background:linear-gradient(120deg,#0a3c8c,#1565c0);color:#fff;border-radius:14px;padding:24px 30px;margin-bottom:16px}.report-header h1{margin:0 0 6px;font-size:23px}.report-header .meta{font-size:12.5px;opacity:.92}.report-header .tag{display:inline-block;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:16px;margin:6px 6px 0 0;font-size:11.5px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.kpi .v{font-size:24px;font-weight:700;color:var(--brand)}.kpi .l{font-size:12.5px;color:var(--sub)}section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;break-inside:avoid}h2{font-size:18px;margin:0 0 12px;padding-left:11px;border-left:4px solid var(--brand)}.note{font-size:12.5px;color:var(--sub);background:#f3f6fb;border-radius:8px;padding:9px 11px;margin:6px 0 12px}.t{border-collapse:collapse;width:100%;font-size:11px}.t th,.t td{border:1px solid var(--line);padding:4px 6px;text-align:center}.t th{background:#eef3fb;color:var(--brand);font-weight:600}.t td.l,.t th.l{text-align:left}.t tbody tr:nth-child(even){background:#fafcff}.hi{background:#fdeaea;color:var(--red);font-weight:700}.mid{background:#fff6e6}.lo{background:#f3faf5}.chain{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0;break-inside:avoid}.chain .ct{font-weight:700;color:var(--brand);font-size:14.5px}.chain .mp{font-size:12px;color:var(--sub);margin:3px 0 8px}.ann-link{color:var(--brand2);text-decoration:none;border-bottom:1px solid #333}@page{margin:12mm}');
+  printWin.document.write('</style></head><body><div class="wrap">');
+  printWin.document.write(reportBody);
+  printWin.document.write('</div></body></html>');
+  printWin.document.close();
+  setTimeout(function() { printWin.print(); }, 500);
+}
+
+function clueExportCSV() {
+  if (!clueReportData || clueReportData.length === 0) return;
+  var rows = [['公司','代码','业务类型','日期','年份','公告标题']];
+  clueReportData.forEach(function(d) {
+    d.leads.forEach(function(l) {
+      rows.push([d.name, d.code, l.cat, l.date, l.year, l.title]);
+    });
+  });
+  var csv = '\ufeff' + rows.map(function(r) { return r.map(function(x) { return '"' + (''+x).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '机构业务线索_明细_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+window.initClueReport = initClueReport;
+window.clueSearchFilter = clueSearchFilter;
+window.clueToggleCompany = clueToggleCompany;
+window.clueToggleRegion = clueToggleRegion;
+window.clueClearSelection = clueClearSelection;
+window.generateClueReport = generateClueReport;
+window.clueBackToSelect = clueBackToSelect;
+window.clueDownloadReport = clueDownloadReport;
+window.cluePrintReport = cluePrintReport;
+window.clueExportCSV = clueExportCSV;
+
 
 // Dashboard clock
 function updateDashClock() {
