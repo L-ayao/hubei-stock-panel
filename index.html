@@ -924,6 +924,18 @@ body {
         </div>
         <button class="dash-card-btn green-btn" onclick="event.stopPropagation();openModule('announcements')">启 动 · LAUNCH</button>
       </div>
+      <div class="dash-card" onclick="openModule('clueReport')">
+        <div class="dash-card-icon teal">🗂️</div>
+        <div class="dash-card-title">机构业务线索报告</div>
+        <div class="dash-card-eng">CLUE REPORT GENERATOR</div>
+        <div class="dash-card-desc">按公司或地区批量生成<br>机构业务线索分析报告 · 热力图 · CSV导出</div>
+        <div class="dash-card-tags">
+          <span class="dash-card-tag">报告生成</span>
+          <span class="dash-card-tag">热力图</span>
+          <span class="dash-card-tag">业务线索</span>
+        </div>
+        <button class="dash-card-btn teal-btn" onclick="event.stopPropagation();openModule('clueReport')">启 动 · LAUNCH</button>
+      </div>
     </div>
   </div>
 
@@ -969,18 +981,6 @@ body {
           <span class="dash-card-tag">员工持股</span>
         </div>
         <button class="dash-card-btn pink-btn" onclick="event.stopPropagation();openModule('overview')">启 动 · LAUNCH</button>
-      </div>
-      <div class="dash-card" onclick="openModule('clueReport')">
-        <div class="dash-card-icon teal">🗂️</div>
-        <div class="dash-card-title">机构业务线索报告</div>
-        <div class="dash-card-eng">CLUE REPORT GENERATOR</div>
-        <div class="dash-card-desc">按公司或地区批量生成<br>机构业务线索分析报告 · 热力图 · CSV导出</div>
-        <div class="dash-card-tags">
-          <span class="dash-card-tag">报告生成</span>
-          <span class="dash-card-tag">热力图</span>
-          <span class="dash-card-tag">业务线索</span>
-        </div>
-        <button class="dash-card-btn teal-btn" onclick="event.stopPropagation();openModule('clueReport')">启 动 · LAUNCH</button>
       </div>
     </div>
   </div>
@@ -1409,19 +1409,19 @@ EMBEDDED_CNINFO_DATA.push(...CNINFO_DATA_REST);
 // ======================== COMPANY CITY MAPPING ========================
 const COMPANY_CITY = {
 "*ST南置":"武汉","*ST启环":"宜昌","*ST天喻":"武汉","*ST尔雅":"武汉","*ST明德":"武汉",
-"*ST美谷":"武汉","*ST闻泰":"武汉","*ST顾地":"鄂州","ST中珠":"孝感","ST京机":"荆州",
+"*ST美谷":"襄阳","*ST闻泰":"武汉","*ST顾地":"鄂州","ST中珠":"孝感","ST京机":"荆州",
 "ST人福":"武汉","ST应急":"武汉","ST明诚":"武汉","ST能特":"武汉","ST逸飞":"武汉",
 "一致魔芋":"宜昌","万润新能":"十堰","三丰智能":"黄石","三安光电":"武汉","三峡新材":"宜昌",
 "三峡旅游":"宜昌","三特索道":"武汉","东湖高新":"武汉","东田微":"武汉","东贝集团":"黄石",
-"东风股份":"武汉","中一科技":"黄冈","中信特钢":"武汉","中元股份":"武汉","中安科":"武汉",
+"东风股份":"襄阳","中一科技":"黄冈","中信特钢":"武汉","中元股份":"武汉","中安科":"武汉",
 "中百集团":"武汉","中科通达":"武汉","中贝通信":"武汉","久之洋":"武汉","久量股份":"武汉",
 "九州通":"武汉","九菱科技":"武汉","五方光电":"荆州","亨迪药业":"荆门","信科移动-U":"武汉",
-"健民集团":"武汉","光庭信息":"武汉","光电股份":"武汉","光迅科技":"武汉","共同药业":"荆门",
+"健民集团":"武汉","光庭信息":"武汉","光电股份":"襄阳","光迅科技":"武汉","共同药业":"襄阳",
 "兴发集团":"宜昌","兴图新科":"武汉","兴福电子":"宜昌","农尚环境":"武汉","凤凰航运":"武汉",
 "凯瑞德":"荆州","凯龙股份":"荆门","力佳科技":"黄石","力源信息":"武汉","华中数控":"武汉",
 "华工科技":"武汉","华康洁净":"武汉","华强科技":"宜昌","华新建材":"黄石","华昌达":"武汉",
 "华灿光电":"武汉","华阳变速":"十堰","博亚精工":"襄阳","双环科技":"宜昌","台基股份":"襄阳",
-"和远气体":"宜昌","嘉必优":"武汉","四方光电":"武汉","回天新材":"武汉","回盛生物":"襄阳",
+"和远气体":"宜昌","嘉必优":"武汉","四方光电":"武汉","回天新材":"襄阳","回盛生物":"武汉",
 "国创高新":"武汉","均瑶健康":"宜昌","塞力医疗":"武汉","天风证券":"武汉","奥美医疗":"宜昌",
 "安琪酵母":"宜昌","安道麦A":"宜昌","安道麦B":"宜昌","宏发股份":"武汉","宏海科技":"武汉",
 "宏源药业":"黄冈","宏裕包材":"宜昌","富邦科技":"武汉","居然智家":"武汉","帝尔激光":"武汉",
@@ -1834,8 +1834,9 @@ function getAllCompanyAnnouncements(companyName) {
     try {
       const dataObj = window[varName];
       if (dataObj && dataObj[companyName] && dataObj[companyName].announcements) {
+        const rawCode = dataObj[companyName].rawCode || '';
         dataObj[companyName].announcements.forEach(a => {
-          all.push({ ...a, _year: year });
+          all.push({ ...a, _year: year, _rawCode: rawCode, _cninfoUrl: a.announcementId ? ('https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId) : '' });
         });
       }
     } catch(e) { /* data not loaded */ }
@@ -4987,14 +4988,15 @@ function generateClueReport() {
       var cat = clueClassify(a.title);
       if (cat) {
         byCat[cat] = (byCat[cat]||0) + 1;
-        leads.push({ title: a.title, date: a.date, year: a._year || a.date.substring(0,4), cat: cat, cninfoUrl: a.link || '' });
+        leads.push({ title: a.title, date: a.date, year: a._year || a.date.substring(0,4), cat: cat, cninfoUrl: a._cninfoUrl || '' });
       }
     });
     
+    var fullName = (typeof window.COMPANY_FULL_NAMES !== 'undefined' && window.COMPANY_FULL_NAMES[c]) || c;
     reportData.push({
       name: c,
       code: fin.code || '',
-      full: c,
+      full: fullName,
       district: city,
       industry: ind,
       marketCap: fin.marketCap || 0,
@@ -5113,8 +5115,176 @@ function generateClueReport() {
   });
   html += '</div>';
   
+  // Section 5: Industry Chain Map
+  html += '<div class="clue-section"><h2>五、支柱产业链全景与机构业务机会地图</h2>';
+  html += '<div class="clue-note">基于行业概览技能框架，将所选公司归入支柱产业链，映射主导机构业务线与切入点。</div>';
+  // Group by industry
+  var industryGroups = {};
+  reportData.forEach(function(d) {
+    var ind = d.industry || '其他';
+    if (!industryGroups[ind]) industryGroups[ind] = [];
+    industryGroups[ind].push(d);
+  });
+  Object.keys(industryGroups).sort().forEach(function(ind) {
+    var comps = industryGroups[ind];
+    html += '<div class="clue-chain"><div class="ct">'+ind+' <span style="color:#6b7280;font-weight:400;font-size:12px">（'+comps.length+'家）</span></div>';
+    html += '<div class="mp">代表：'+comps.map(function(c){return c.name+'('+(c.code.split('.')[0]||'')+')';}).join('、')+'</div>';
+    html += '<table class="clue-table"><thead><tr><th class="l">代表公司</th><th class="l">主导业务线</th><th class="l">机构切入点</th></tr></thead><tbody>';
+    comps.forEach(function(d) {
+      var best = '', bv = -1;
+      CLUE_CATS.forEach(function(c) {
+        var sc = (d.byCat[c]||0) * (CLUE_W[c]||0);
+        if (sc > bv) { bv = sc; best = c; }
+      });
+      html += '<tr><td class="l"><b>'+d.name+'</b></td><td class="l">'+(best||'—')+'</td><td class="l" style="font-size:12px">'+(CLUE_CATMAP[best]||'—')+'</td></tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  html += '</div>';
+  
+  // Section 6: Timeline
+  html += '<div class="clue-section"><h2>六、近12月机构业务动态时间轴</h2>';
+  var cutoffDate = (now.getFullYear()-1) + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  var recentLeads = [];
+  reportData.forEach(function(d) {
+    d.leads.forEach(function(l) {
+      if (l.date >= cutoffDate) {
+        recentLeads.push({ company: d.name, code: d.code, title: l.title, date: l.date, cat: l.cat, url: l.cninfoUrl });
+      }
+    });
+  });
+  recentLeads.sort(function(a,b) { return b.date > a.date ? 1 : -1; });
+  if (recentLeads.length > 0) {
+    html += '<table class="clue-table"><thead><tr><th>日期</th><th class="l">公司</th><th>业务线</th><th class="l">公告标题</th></tr></thead><tbody>';
+    recentLeads.slice(0, 80).forEach(function(l) {
+      var link = l.url ? '<a href="'+l.url+'" target="_blank" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
+      html += '<tr><td style="white-space:nowrap">'+l.date+'</td><td class="l"><b>'+l.company+'</b></td><td style="font-size:11px">'+l.cat+'</td><td class="l">'+link+'</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (recentLeads.length > 80) html += '<div style="font-size:12px;color:#6b7280;margin-top:8px;">显示前80条，共'+recentLeads.length+'条近期动态</div>';
+  } else {
+    html += '<div style="font-size:13px;color:#6b7280;padding:12px 0;">近12个月无机构业务相关公告</div>';
+  }
+  html += '</div>';
+  
+  // Section 7: Service Plans (superskills)
+  html += '<div class="clue-section"><h2>七、重点客户深挖方案（应用 superskills 生成）</h2>';
+  html += '<div class="clue-note">基于线索评分，对最热的业务线选取代表公司，应用 <b>share-mgmt-proposal</b> 与 <b>listed-company-wealth</b> 等技能框架生成可落地服务方案。</div>';
+  // Pick top 2-3 companies by score for each top category
+  var planCats = CLUE_CATS.filter(function(c) {
+    return reportData.some(function(d) { return (d.byCat[c]||0) > 0; });
+  }).sort(function(a,b) {
+    var sa = reportData.reduce(function(s,d){return s+((d.byCat[a]||0)*(CLUE_W[a]||0));},0);
+    var sb = reportData.reduce(function(s,d){return s+((d.byCat[b]||0)*(CLUE_W[b]||0));},0);
+    return sb - sa;
+  }).slice(0, 3);
+  
+  planCats.forEach(function(cat) {
+    // Find top company for this category
+    var topComp = reportData.slice().sort(function(a,b) {
+      return ((b.byCat[cat]||0)*(CLUE_W[cat]||0)) - ((a.byCat[cat]||0)*(CLUE_W[cat]||0));
+    })[0];
+    if (!topComp || !(topComp.byCat[cat])) return;
+    
+    var planTitle = '';
+    var planContent = '';
+    var skillName = '';
+    
+    if (cat === '股权激励/员工持股') {
+      skillName = 'share-mgmt-proposal';
+      planTitle = topComp.name + ' · 股权激励 / ESOP 综合服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">ESOP 方案设计</td><td class="l">持股平台架构搭建、解锁条件设定、税务筹划</td><td class="l">省心享·WeFund 定制平台</td></tr>'
+        + '<tr><td class="l">解锁后减持交易</td><td class="l">大宗交易撮合、合规减持窗口管理</td><td class="l">交易执行 + 研究支持</td></tr>'
+        + '<tr><td class="l">股权激励融资</td><td class="l">员工持股配资方案、杠杆结构设计</td><td class="l">资管信托安排</td></tr>'
+        + '<tr><td class="l">长期财富管理</td><td class="l">高管个人财富管理、家族信托</td><td class="l">企业家办公室服务</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '股份回购') {
+      skillName = 'share-mgmt-proposal';
+      planTitle = topComp.name + ' · 股份回购综合服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">回购专户开立</td><td class="l">专用证券账户、资金账户开立与管理</td><td class="l">回购专户一站式服务</td></tr>'
+        + '<tr><td class="l">回购资金管理</td><td class="l">闲置回购资金理财、资金调度优化</td><td class="l">省心投 / 省心选产品配置</td></tr>'
+        + '<tr><td class="l">回购执行交易</td><td class="l">集中竞价交易策略、时机选择</td><td class="l">算法交易 + 执行服务</td></tr>'
+        + '<tr><td class="l">回购后注销/转让</td><td class="l">注销登记、员工持股计划转让</td><td class="l">合规流程办理</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '现金管理/理财') {
+      skillName = 'listed-company-wealth';
+      planTitle = topComp.name + ' · 上市公司理财服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">产品层级</th><th class="l">适用场景</th><th class="l">华泰产品</th></tr></thead><tbody>'
+        + '<tr><td class="l">省心投（基础层）</td><td class="l">闲置募集资金/自有资金现金管理</td><td class="l">定制化收益凭证、报价回购</td></tr>'
+        + '<tr><td class="l">省心选（配置层）</td><td class="l">多资产配置、固收+</td><td class="l">券商资管产品、基金组合</td></tr>'
+        + '<tr><td class="l">省心享·企业家办公室（定制层）</td><td class="l">大股东/高管财富管理</td><td class="l">家族信托、全权委托</td></tr>'
+        + '<tr><td class="l">风险控制</td><td class="l">理财额度审批流程、合规监控</td><td class="l">理财顾问 + 合规支持</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '再融资(定增/可转债/配股)') {
+      skillName = 'investment-banking';
+      planTitle = topComp.name + ' · 再融资综合服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">承销保荐</td><td class="l">定增/可转债/配股方案设计与承销</td><td class="l">华泰联合证券投行</td></tr>'
+        + '<tr><td class="l">研究覆盖</td><td class="l">行业研究报告、公司深度报告</td><td class="l">华泰研究所</td></tr>'
+        + '<tr><td class="l">机构配售</td><td class="l">定向投资者路演、定价</td><td class="l">机构销售团队</td></tr>'
+        + '<tr><td class="l">募集资金理财</td><td class="l">闲置募集资金现金管理</td><td class="l">省心投产品对接</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '股东增减持') {
+      skillName = 'block-trade';
+      planTitle = topComp.name + ' · 大股东增减持服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">大宗交易撮合</td><td class="l">大宗交易对手方匹配、定价</td><td class="l">大宗交易团队</td></tr>'
+        + '<tr><td class="l">协议转让</td><td class="l">协议转让方案设计、合规支持</td><td class="l">合规 + 法律支持</td></tr>'
+        + '<tr><td class="l">减持节奏管理</td><td class="l">减持窗口规划、市场冲击控制</td><td class="l">算法交易 + 研判</td></tr>'
+        + '<tr><td class="l">财富承接</td><td class="l">减持资金理财、家族信托</td><td class="l">省心享·企业家办公室</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '债券融资') {
+      skillName = 'fixed-income';
+      planTitle = topComp.name + ' · 债券融资服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">债券承销</td><td class="l">公司债/中票/短融承销</td><td class="l">华泰联合固定收益</td></tr>'
+        + '<tr><td class="l">投资策略</td><td class="l">债券投资咨询、利率择时</td><td class="l">FICC研究团队</td></tr>'
+        + '<tr><td class="l">风险管理</td><td class="l">久期管理、信用风险监控</td><td class="l">风险顾问服务</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '并购重组') {
+      skillName = 'ma-advisory';
+      planTitle = topComp.name + ' · 并购重组财务顾问方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">交易撮合</td><td class="l">标的寻源、交易对手对接</td><td class="l">并购财顾团队</td></tr>'
+        + '<tr><td class="l">估值定价</td><td class="l">标的估值、交易对价设计</td><td class="l">估值模型 + 研究</td></tr>'
+        + '<tr><td class="l">交易结构设计</td><td class="l">支付方式、融资安排</td><td class="l">结构化方案设计</td></tr>'
+        + '<tr><td class="l">配套融资</td><td class="l">并购贷款、配融定增</td><td class="l">投行 + 资管联动</td></tr>'
+        + '</tbody></table>';
+    } else if (cat === '分红派息') {
+      skillName = 'wealth-management';
+      planTitle = topComp.name + ' · 分红再投资服务方案';
+      planContent = '<table class="clue-table"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>'
+        + '<tr><td class="l">分红再投资</td><td class="l">红利再投资计划设计</td><td class="l">DRIP方案定制</td></tr>'
+        + '<tr><td class="l">董监高财富管理</td><td class="l">分红资金理财配置</td><td class="l">省心选产品组合</td></tr>'
+        + '<tr><td class="l">投资者关系</td><td class="l">分红政策沟通、股东回报规划</td><td class="l">IR顾问服务</td></tr>'
+        + '</tbody></table>';
+    }
+    
+    // Find latest announcement for this company+cat
+    var latestAnn = '';
+    topComp.leads.forEach(function(l) {
+      if (l.cat === cat && (!latestAnn || l.date > latestAnn.date)) latestAnn = l;
+    });
+    var annLink = latestAnn && latestAnn.cninfoUrl ? '<a href="'+latestAnn.cninfoUrl+'" target="_blank" class="clue-ann-link">'+latestAnn.title+' 🔗</a>' : (latestAnn ? latestAnn.title : '');
+    
+    html += '<div class="clue-chain" style="background:linear-gradient(120deg,#f8fbff,#eef4fc);">'
+      + '<div class="ct">📄 '+planTitle+'</div>'
+      + '<div class="mp">应用 <b>'+skillName+'</b> 框架 ｜ '+(topComp.byCat[cat]||0)+'条相关公告 ｜ 最近：'+annLink+'</div>'
+      + planContent + '</div>';
+  });
+  html += '</div>';
+  
+  // Section 8: Data Export
+  html += '<div class="clue-section"><h2>八、数据导出</h2>';
+  html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">';
+  html += '<button onclick="clueExportCSV()" style="background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;">📄 导出全部线索明细 CSV</button>';
+  html += '<button onclick="clueExportProfileCSV()" style="background:var(--accent2);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;">📊 导出公司画像 CSV</button>';
+  html += '</div></div>';
+  
   // Footer
-  html += '<div style="font-size:12px;color:#6b7280;text-align:center;margin-top:22px;">报告由湖北上市公司AI工作室 · 机构业务线索报告生成器 自动生成 · '+dateStr+'</div>';
+  html += '<div style="font-size:12px;color:#6b7280;text-align:center;margin-top:22px;">报告由湖北上市公司AI工作室 · 机构业务线索报告生成器 自动生成 · '+dateStr+' · 应用 superskills 多技能增强</div>';
   
   // Store for download
   clueReportHTML = html;
@@ -5201,17 +5371,36 @@ function cluePrintReport() {
 
 function clueExportCSV() {
   if (!clueReportData || clueReportData.length === 0) return;
-  var rows = [['公司','代码','业务类型','日期','年份','公告标题']];
+  var rows = [['公司','代码','业务类型','日期','年份','公告标题','巨潮链接']];
   clueReportData.forEach(function(d) {
     d.leads.forEach(function(l) {
-      rows.push([d.name, d.code, l.cat, l.date, l.year, l.title]);
+      l.cat.split('+').forEach(function(c) {
+        rows.push([d.name, d.code, c, l.date, l.year, l.title, l.cninfoUrl || '']);
+      });
     });
   });
   var csv = '\ufeff' + rows.map(function(r) { return r.map(function(x) { return '"' + (''+x).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
   var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = '机构业务线索_明细_' + new Date().toISOString().slice(0,10) + '.csv';
+  var regionLabel = clueSelectedCompanies.length > 0 ? clueSelectedCompanies[0] : '上市公司';
+  a.download = regionLabel + '等_机构业务线索_明细_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function clueExportProfileCSV() {
+  if (!clueReportData || clueReportData.length === 0) return;
+  var rows = [['简称','代码','全称','区县','行业','市值(亿)','净利润(亿)','PE','PB','上市日期','6年公告数','业务线索数']];
+  clueReportData.forEach(function(d) {
+    rows.push([d.name, d.code, d.full, d.district, d.industry, d.marketCap, d.netProfit, d.pe, d.pb, d.listing, d.annTotal, d.leadCount]);
+  });
+  var csv = '\ufeff' + rows.map(function(r) { return r.map(function(x) { return '"' + (''+x).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var regionLabel = clueSelectedCompanies.length > 0 ? clueSelectedCompanies[0] : '上市公司';
+  a.download = regionLabel + '等_上市公司画像_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -5226,6 +5415,7 @@ window.clueBackToSelect = clueBackToSelect;
 window.clueDownloadReport = clueDownloadReport;
 window.cluePrintReport = cluePrintReport;
 window.clueExportCSV = clueExportCSV;
+window.clueExportProfileCSV = clueExportProfileCSV;
 
 
 // Dashboard clock
