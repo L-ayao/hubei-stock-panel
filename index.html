@@ -5043,11 +5043,11 @@ function generateClueReport() {
   
   // Section 1: Company Profile
   html += '<div class="clue-section"><h2>一、公司画像总览</h2>';
-  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>代码</th><th class="l">简称</th><th>区县</th><th>行业</th><th>市值(亿)</th><th>净利(亿)</th><th>上市日期</th><th>线索</th><th>评分</th></tr></thead><tbody>';
+  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>代码</th><th class="l">简称</th><th>区县</th><th>行业</th><th>市值(亿)</th><th>净利(亿)</th><th>上市日期</th></tr></thead><tbody>';
   reportData.forEach(function(d) {
     var np = parseFloat(d.netProfit);
     var npc = np < 0 ? 'style="color:#d23f3f"' : '';
-    html += '<tr><td>'+d.code+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.district+'</td><td>'+d.industry+'</td><td>'+d.marketCap+'</td><td '+npc+'>'+np.toFixed(2)+'</td><td>'+d.listing+'</td><td><b>'+d.leadCount+'</b></td><td>'+clueScore(d.byCat).toFixed(0)+'</td></tr>';
+    html += '<tr><td>'+d.code+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.district+'</td><td>'+d.industry+'</td><td>'+d.marketCap+'</td><td '+npc+'>'+np.toFixed(2)+'</td><td>'+d.listing+'</td></tr>';
   });
   html += '</tbody></table></div></div>';
   
@@ -5070,50 +5070,68 @@ function generateClueReport() {
   });
   html += '</tbody></table></div></div>';
   
-  // Section 3: Focus companies
+  // Section 3: Focus companies (no score/lead columns)
   html += '<div class="clue-section"><h2>三、重点商机速览（按机构业务契合度排序）</h2>';
   var topN = reportData.slice().sort(function(a,b) { return clueScore(b.byCat) - clueScore(a.byCat); }).slice(0, Math.min(10, reportData.length));
-  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>排名</th><th class="l">公司</th><th>代码</th><th>市值(亿)</th><th>主导业务线</th><th>线索</th><th>评分</th><th class="l">机构切入点</th></tr></thead><tbody>';
+  html += '<div style="overflow-x:auto"><table class="clue-table"><thead><tr><th>排名</th><th class="l">公司</th><th>代码</th><th>市值(亿)</th><th>主导业务线</th><th class="l">机构切入点</th></tr></thead><tbody>';
   topN.forEach(function(d, i) {
     var best = '', bv = -1;
     CLUE_CATS.forEach(function(c) {
       var sc = (d.byCat[c]||0) * (CLUE_W[c]||0);
       if (sc > bv) { bv = sc; best = c; }
     });
-    html += '<tr><td>'+(i+1)+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.code+'</td><td>'+d.marketCap+'</td><td><b>'+best+'</b></td><td>'+d.leadCount+'</td><td><b>'+clueScore(d.byCat).toFixed(0)+'</b></td><td class="l" style="font-size:12px">'+(CLUE_CATMAP[best]||'')+'</td></tr>';
+    html += '<tr><td>'+(i+1)+'</td><td class="l"><b>'+d.name+'</b></td><td>'+d.code+'</td><td>'+d.marketCap+'</td><td><b>'+best+'</b></td><td class="l" style="font-size:12px">'+(CLUE_CATMAP[best]||'')+'</td></tr>';
   });
   html += '</tbody></table></div></div>';
   
-  // Section 4: Category details
-  html += '<div class="clue-section"><h2>四、按业务线拆分的详细线索</h2>';
-  html += '<div class="clue-note">点击公告标题可跳转巨潮资讯查看原文。每条记录为该公司在该业务线最近一次公告。</div>';
-  CLUE_CATS.forEach(function(cat) {
-    var byComp = {};
-    reportData.forEach(function(d) {
-      d.leads.forEach(function(l) {
-        if (l.cat === cat) {
-          if (!byComp[d.name] || l.date > byComp[d.name].date) {
-            byComp[d.name] = { date: l.date, title: l.title, url: l.cninfoUrl };
-          }
-        }
-      });
-    });
-    var rows = Object.keys(byComp).map(function(n) { return { name: n, date: byComp[n].date, title: byComp[n].title, url: byComp[n].url }; }).sort(function(a,b) { return b.date > a.date ? 1 : -1; });
+  // Section 3.5: Per-stock institutional business analysis
+  html += '<div class="clue-section"><h2>四、各公司机构业务分析</h2>';
+  html += '<div class="clue-note">以下对每家公司的机构业务线索进行逐条分析，按业务机会重要性排序，关键机会以红色标注。</div>';
+  reportData.forEach(function(d) {
+    html += '<div class="clue-chain" style="margin:12px 0;padding:14px 16px;">';
+    // Stock header
+    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">';
+    html += '<span style="font-size:16px;font-weight:700;color:#0a3c8c;">'+d.name+'</span>';
+    html += '<span style="font-size:13px;color:#6b7280;">'+d.code+'</span>';
+    html += '<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:#eef3fb;color:#0a3c8c;">'+d.industry+'</span>';
+    html += '<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:#eafaf0;color:#1f9d57;">'+d.district+'</span>';
+    html += '</div>';
+    // Key metrics
+    html += '<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#6b7280;margin-bottom:10px;">';
+    html += '<span>市值 <b style="color:#1f2a37;">'+d.marketCap+'亿</b></span>';
+    var np = parseFloat(d.netProfit);
+    html += '<span>净利 <b style="color:'+(np<0?'#d23f3f':'#1f2a37')+';">'+np.toFixed(2)+'亿</b></span>';
+    html += '<span>PE <b style="color:#1f2a37;">'+(d.pe>0?d.pe.toFixed(1):'亏损')+'</b></span>';
+    html += '<span>上市 <b style="color:#1f2a37;">'+(d.listing||'—')+'</b></span>';
+    html += '</div>';
     
-    html += '<div class="clue-chain"><div class="ct">'+cat+' <span style="color:#6b7280;font-weight:400;font-size:12px">（涉及 '+rows.length+' 家）</span></div>';
-    if (rows.length > 0) {
-      html += '<table class="clue-table"><thead><tr><th class="l">上市公司</th><th>最近公告时间</th><th class="l">公告标题</th></tr></thead><tbody>';
-      rows.forEach(function(r) {
-        var link = r.url ? '<a href="'+r.url+'" target="_blank" class="clue-ann-link" title="点击跳转巨潮资讯查看原文">'+r.title+' 🔗</a>' : r.title;
-        html += '<tr><td class="l"><b>'+r.name+'</b></td><td style="white-space:nowrap">'+r.date+'</td><td class="l">'+link+'</td></tr>';
+    // Generate numbered insights
+    var insights = generateStockInsights(d);
+    if (insights.length > 0) {
+      html += '<div style="font-size:13px;line-height:1.8;">';
+      insights.forEach(function(ins, idx) {
+        var num = ['①','②','③','④','⑤','⑥','⑦','⑧'][idx] || (idx+1)+'';
+        var titleStyle = ins.highPriority ? 'color:#d23f3f;font-weight:700;' : 'color:#1f2a37;font-weight:600;';
+        html += '<div style="margin:6px 0;padding:6px 10px;border-radius:6px;background:'+(ins.highPriority?'#fff5f5':'#f8fbff')+';">';
+        html += num + ' <span style="'+titleStyle+'">'+ins.title+'</span>';
+        html += '<span style="color:#374151;font-size:12px;"> — ' + ins.fact + '</span>';
+        if (ins.action) {
+          html += '<div style="color:#1565c0;font-size:12px;margin-top:2px;padding-left:20px;">→ ' + ins.action + '</div>';
+        }
+        if (ins.link) {
+          html += '<div style="font-size:11px;padding-left:20px;margin-top:2px;">' + ins.link + '</div>';
+        }
+        html += '</div>';
       });
-      html += '</tbody></table>';
+      html += '</div>';
     } else {
-      html += '<div style="font-size:12px;color:#6b7280;padding:8px 0;">暂无相关公告</div>';
+      html += '<div style="font-size:12px;color:#6b7280;padding:8px 0;">暂无明显机构业务线索</div>';
     }
     html += '</div>';
   });
   html += '</div>';
+  
+
   
   // Section 5: Industry Chain Map
   html += '<div class="clue-section"><h2>五、支柱产业链全景与机构业务机会地图</h2>';
@@ -5684,6 +5702,152 @@ function getServicePlanConfig(cat) {
   return '<p>综合服务方案</p>';
 }
 
+// Generate per-stock institutional business insights
+function generateStockInsights(d) {
+  var insights = [];
+  var np = parseFloat(d.netProfit) || 0;
+  var mc = parseFloat(d.marketCap) || 0;
+  
+  // Helper: find latest lead for a category
+  function latestLead(cat) {
+    var latest = null;
+    d.leads.forEach(function(l) {
+      if (l.cat.split('+').indexOf(cat) >= 0) {
+        if (!latest || l.date > latest.date) latest = l;
+      }
+    });
+    return latest;
+  }
+  
+  function makeLink(l) {
+    if (!l) return '';
+    var link = l.cninfoUrl ? '<a href="'+l.cninfoUrl+'" target="_blank" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
+    return '最近公告：'+l.date+' — '+link;
+  }
+  
+  // 1. 股东增减持
+  if (d.byCat['股东增减持']) {
+    var l = latestLead('股东增减持');
+    var highPriority = d.byCat['股东增减持'] >= 10;
+    insights.push({
+      title: '股东增减持服务',
+      highPriority: highPriority,
+      fact: d.byCat['股东增减持']+'条增减持公告（2021-2026），反映股东及董监高活跃的交易行为。',
+      action: '大宗交易撮合 / 协议转让 / 减持节奏管理，减持资金可对接省心享·企业家办公室',
+      link: makeLink(l)
+    });
+  }
+  
+  // 2. 股权激励/员工持股
+  if (d.byCat['股权激励/员工持股']) {
+    var l = latestLead('股权激励/员工持股');
+    insights.push({
+      title: '股权激励/ESOP服务',
+      highPriority: true,
+      fact: d.byCat['股权激励/员工持股']+'条股权激励相关公告，已有ESOP实施经验。',
+      action: 'ESOP方案设计 / 持股平台搭建 / 解锁后减持交易（省心享·WeFund定制）',
+      link: makeLink(l)
+    });
+  }
+  
+  // 3. 股份回购
+  if (d.byCat['股份回购']) {
+    var l = latestLead('股份回购');
+    insights.push({
+      title: '股份回购服务',
+      highPriority: true,
+      fact: d.byCat['股份回购']+'条回购相关公告，公司有回购行为。',
+      action: '回购专户开立 / 回购资金管理 / 回购执行交易',
+      link: makeLink(l)
+    });
+  }
+  
+  // 4. 再融资
+  if (d.byCat['再融资(定增/可转债/配股)']) {
+    var l = latestLead('再融资(定增/可转债/配股)');
+    var highPriority = d.byCat['再融资(定增/可转债/配股)'] >= 5;
+    insights.push({
+      title: '再融资服务',
+      highPriority: highPriority,
+      fact: d.byCat['再融资(定增/可转债/配股)']+'条再融资相关公告，涉及定增/可转债/配股。',
+      action: '定增·可转债承销 / 研究覆盖 / 机构配售 / 募集资金理财对接',
+      link: makeLink(l)
+    });
+  }
+  
+  // 5. 现金管理/理财
+  if (d.byCat['现金管理/理财']) {
+    var l = latestLead('现金管理/理财');
+    var highPriority = d.byCat['现金管理/理财'] >= 20;
+    insights.push({
+      title: '现金管理/理财服务',
+      highPriority: highPriority,
+      fact: d.byCat['现金管理/理财']+'条理财相关公告，闲置资金理财需求活跃。',
+      action: '省心投（基础层）/ 省心选（配置层）/ 省心享·企业家办公室（定制层）分层配置',
+      link: makeLink(l)
+    });
+  }
+  
+  // 6. 并购重组
+  if (d.byCat['并购重组']) {
+    var l = latestLead('并购重组');
+    insights.push({
+      title: '并购重组财务顾问',
+      highPriority: true,
+      fact: d.byCat['并购重组']+'条并购重组相关公告。',
+      action: '并购财顾 / 估值定价 / 交易结构设计 / 配套融资安排',
+      link: makeLink(l)
+    });
+  }
+  
+  // 7. 债券融资
+  if (d.byCat['债券融资']) {
+    var l = latestLead('债券融资');
+    insights.push({
+      title: '债券融资服务',
+      highPriority: false,
+      fact: d.byCat['债券融资']+'条债券融资相关公告。',
+      action: '公司债/中票等信用债承销 / 投资策略 / 风险管理',
+      link: makeLink(l)
+    });
+  }
+  
+  // 8. 分红派息
+  if (d.byCat['分红派息']) {
+    var l = latestLead('分红派息');
+    insights.push({
+      title: '分红再投资服务',
+      highPriority: false,
+      fact: d.byCat['分红派息']+'条分红派息相关公告。',
+      action: '分红再投资计划 / 董监高财富管理 / 投资者关系顾问',
+      link: makeLink(l)
+    });
+  }
+  
+  // If no insights from announcements, add basic observations
+  if (insights.length === 0) {
+    if (mc > 100) {
+      insights.push({
+        title: '中大盘企业综合服务机会',
+        highPriority: false,
+        fact: '市值'+mc+'亿，当前无明确机构业务公告记录，存在潜在服务空间。',
+        action: '主动接触，了解资本运作计划，提供研究覆盖和机构销售服务',
+        link: ''
+      });
+    } else {
+      insights.push({
+        title: '中小盘成长型企业服务',
+        highPriority: false,
+        fact: '市值'+mc+'亿，'+d.industry+'行业，当前无明确机构业务公告。',
+        action: '持续跟踪公告动态，关注股权激励、再融资等机会',
+        link: ''
+      });
+    }
+  }
+  
+  return insights;
+}
+
 window.initClueReport = initClueReport;
 window.clueSearchFilter = clueSearchFilter;
 window.clueToggleCompany = clueToggleCompany;
@@ -5696,6 +5860,7 @@ window.cluePrintReport = cluePrintReport;
 window.clueExportCSV = clueExportCSV;
 window.clueExportProfileCSV = clueExportProfileCSV;
 window.clueOpenServicePlan = clueOpenServicePlan;
+window.generateStockInsights = generateStockInsights;
 window.getServicePlanPainPoints = getServicePlanPainPoints;
 window.getServicePlanConfig = getServicePlanConfig;
 
