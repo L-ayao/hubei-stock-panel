@@ -1311,7 +1311,7 @@ window.addEventListener('error', function(e) {
 <script src="announcements_2023_data.js"></script>
 <script src="announcements_2024_data.js"></script>
 <script src="announcements_2025_data.js"></script>
-<script src="announcements_2026_data.js?v=20260714"></script>
+<script src="announcements_2026_data.js?v=1784099124"></script>
 <script src="listing_date_map.js"></script>
 <script src="ann_counts_2021_2026.js"></script>
 <script src="company_finance_data.js"></script>
@@ -5133,60 +5133,12 @@ function generateClueReport() {
   
 
   
-  // Section 5: Industry Chain Map
-  html += '<div class="clue-section"><h2>五、支柱产业链全景与机构业务机会地图</h2>';
-  html += '<div class="clue-note">基于行业概览技能框架，将所选公司归入支柱产业链，映射主导机构业务线与切入点。</div>';
-  // Group by industry
-  var industryGroups = {};
-  reportData.forEach(function(d) {
-    var ind = d.industry || '其他';
-    if (!industryGroups[ind]) industryGroups[ind] = [];
-    industryGroups[ind].push(d);
-  });
-  Object.keys(industryGroups).sort().forEach(function(ind) {
-    var comps = industryGroups[ind];
-    html += '<div class="clue-chain"><div class="ct">'+ind+' <span style="color:#6b7280;font-weight:400;font-size:12px">（'+comps.length+'家）</span></div>';
-    html += '<div class="mp">代表：'+comps.map(function(c){return c.name+'('+(c.code.split('.')[0]||'')+')';}).join('、')+'</div>';
-    html += '<table class="clue-table"><thead><tr><th class="l">代表公司</th><th class="l">主导业务线</th><th class="l">机构切入点</th></tr></thead><tbody>';
-    comps.forEach(function(d) {
-      var best = '', bv = -1;
-      CLUE_CATS.forEach(function(c) {
-        var sc = (d.byCat[c]||0) * (CLUE_W[c]||0);
-        if (sc > bv) { bv = sc; best = c; }
-      });
-      html += '<tr><td class="l"><b>'+d.name+'</b></td><td class="l">'+(best||'—')+'</td><td class="l" style="font-size:12px">'+(CLUE_CATMAP[best]||'—')+'</td></tr>';
-    });
-    html += '</tbody></table></div>';
-  });
-  html += '</div>';
+
   
-  // Section 6: Timeline
-  html += '<div class="clue-section"><h2>六、近12月机构业务动态时间轴</h2>';
-  var cutoffDate = (now.getFullYear()-1) + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-  var recentLeads = [];
-  reportData.forEach(function(d) {
-    d.leads.forEach(function(l) {
-      if (l.date >= cutoffDate) {
-        recentLeads.push({ company: d.name, code: d.code, title: l.title, date: l.date, cat: l.cat, url: l.cninfoUrl });
-      }
-    });
-  });
-  recentLeads.sort(function(a,b) { return b.date > a.date ? 1 : -1; });
-  if (recentLeads.length > 0) {
-    html += '<table class="clue-table"><thead><tr><th>日期</th><th class="l">公司</th><th>业务线</th><th class="l">公告标题</th></tr></thead><tbody>';
-    recentLeads.slice(0, 80).forEach(function(l) {
-      var link = l.url ? '<a href="'+l.url+'" target="_blank" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
-      html += '<tr><td style="white-space:nowrap">'+l.date+'</td><td class="l"><b>'+l.company+'</b></td><td style="font-size:11px">'+l.cat+'</td><td class="l">'+link+'</td></tr>';
-    });
-    html += '</tbody></table>';
-    if (recentLeads.length > 80) html += '<div style="font-size:12px;color:#6b7280;margin-top:8px;">显示前80条，共'+recentLeads.length+'条近期动态</div>';
-  } else {
-    html += '<div style="font-size:13px;color:#6b7280;padding:12px 0;">近12个月无机构业务相关公告</div>';
-  }
-  html += '</div>';
+
   
   // Section 7: Service Plans (superskills)
-  html += '<div class="clue-section"><h2>七、重点客户深挖方案（应用 superskills 生成）</h2>';
+  html += '<div class="clue-section"><h2>五、重点客户深挖方案（应用 superskills 生成）</h2>';
   html += '<div class="clue-note">基于线索评分，对最热的业务线选取代表公司，应用 <b>share-mgmt-proposal</b> 与 <b>listed-company-wealth</b> 等技能框架生成可落地服务方案。</div>';
   // Pick top 2-3 companies by score for each top category
   var planCats = CLUE_CATS.filter(function(c) {
@@ -5295,7 +5247,7 @@ function generateClueReport() {
   html += '</div>';
   
   // Section 8: Data Export
-  html += '<div class="clue-section"><h2>八、数据导出</h2>';
+  html += '<div class="clue-section"><h2>六、数据导出</h2>';
   html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">';
   html += '<button onclick="clueExportCSV()" style="background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;">📄 导出全部线索明细 CSV</button>';
   html += '<button onclick="clueExportProfileCSV()" style="background:var(--accent2);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;">📊 导出公司画像 CSV</button>';
