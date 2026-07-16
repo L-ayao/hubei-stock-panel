@@ -1836,7 +1836,27 @@ function getAllCompanyAnnouncements(companyName) {
       if (dataObj && dataObj[companyName] && dataObj[companyName].announcements) {
         const rawCode = dataObj[companyName].rawCode || '';
         dataObj[companyName].announcements.forEach(a => {
-          all.push({ ...a, _year: year, _rawCode: rawCode, _cninfoUrl: a.announcementId ? ('https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId) : '' });
+          all.push({
+          ...a,
+          _year: year,
+          _rawCode: rawCode,
+          _cninfoUrl: (function() {
+            if (!a.announcementId) return '';
+            // If announcementId is numeric (cninfo format), build cninfo URL with orgId
+            if (/^\d+$/.test(a.announcementId)) {
+              var url = 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId;
+              if (a.orgId) url += '&orgId=' + a.orgId;
+              if (a.date) url += '&announcementTime=' + a.date;
+              return url;
+            }
+            // If announcementId starts with 'AN' (East Money format), use East Money URL
+            if (a.announcementId.indexOf('AN') === 0) {
+              return 'https://data.eastmoney.com/notices/detail/' + rawCode + '/' + a.announcementId + '.html';
+            }
+            // Fallback: try cninfo without orgId
+            return 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId;
+          })()
+        });
         });
       }
     } catch(e) { /* data not loaded */ }
