@@ -5266,7 +5266,7 @@ function generateClueReport() {
     topComp.leads.forEach(function(l) {
       if (l.cat === cat && (!latestAnn || l.date > latestAnn.date)) latestAnn = l;
     });
-    var annLink = latestAnn && latestAnn.cninfoUrl ? '<a href="'+latestAnn.cninfoUrl+'" onclick="window.open(this.href,\'_blank\');return false;" class="clue-ann-link">'+latestAnn.title+' 🔗</a>' : (latestAnn ? latestAnn.title : '');
+    var annLink = latestAnn && latestAnn.cninfoUrl ? '<a href="'+latestAnn.cninfoUrl+'" onclick="window.open(this.href);return false;" class="clue-ann-link">'+latestAnn.title+' 🔗</a>' : (latestAnn ? latestAnn.title : '');
     
     html += '<div class="clue-chain" style="background:linear-gradient(120deg,#f8fbff,#eef4fc);">'
       + '<div class="ct"><a href="javascript:void(0)" onclick="clueOpenServicePlan(\''+topComp.name+'\',\''+cat.replace(/'/g,'\\\'')+'\',\''+skillName+'\')" style="color:#0a3c8c;text-decoration:none;cursor:pointer;" onmouseover="this.style.color=\'#1565c0\'" onmouseout="this.style.color=\'#0a3c8c\'">📄 '+planTitle+' ↗</a></div>'
@@ -5706,7 +5706,7 @@ function generateStockInsights(d) {
   
   function makeLink(l) {
     if (!l) return '';
-    var link = l.cninfoUrl ? '<a href="'+l.cninfoUrl+'" onclick="window.open(this.href,\'_blank\');return false;" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
+    var link = l.cninfoUrl ? '<a href="'+l.cninfoUrl+'" onclick="window.open(this.href);return false;" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
     return '最近公告：'+l.date+' — '+link;
   }
   
