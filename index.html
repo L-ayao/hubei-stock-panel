@@ -1842,19 +1842,24 @@ function getAllCompanyAnnouncements(companyName) {
           _rawCode: rawCode,
           _cninfoUrl: (function() {
             if (!a.announcementId) return '';
-            // If announcementId is numeric (cninfo format), build cninfo URL with orgId
+            // If announcementId is numeric (cninfo format)
             if (/^\d+$/.test(a.announcementId)) {
+              // If we have adjunctUrl, link directly to the PDF (opens in browser)
+              if (a.adjunctUrl) {
+                return 'https://static.cninfo.com.cn/' + a.adjunctUrl;
+              }
+              // Otherwise use cninfo detail page with orgId
               var url = 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId;
               if (a.orgId) url += '&orgId=' + a.orgId;
               if (a.date) url += '&announcementTime=' + a.date;
               return url;
             }
-            // If announcementId starts with 'AN' (East Money format), use East Money URL
+            // If announcementId starts with 'AN' (East Money format), use East Money detail page
             if (a.announcementId.indexOf('AN') === 0) {
               return 'https://data.eastmoney.com/notices/detail/' + rawCode + '/' + a.announcementId + '.html';
             }
-            // Fallback: try cninfo without orgId
-            return 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + rawCode + '&announcementId=' + a.announcementId;
+            // Fallback: cninfo search page
+            return 'https://www.cninfo.com.cn/new/fulltextSearch?notautosubmit=&keyWord=' + encodeURIComponent(a.title || '');
           })()
         });
         });
