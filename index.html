@@ -2921,8 +2921,8 @@ function renderDetailWithData(companyName, panel, announcements, totalCount) {
         <div class="da-title">${a.title}</div>
         <div class="da-ai-summary"><span class="ai-label">🤖 AI业务线索：</span>${a._summary || '常规公告，关注后续业务机会'}</div>
         <div class="da-links">
-          <a class="da-link" href="${a.link}" onclick="window.open(this.href);return false;" rel="noopener">📎 巨潮公告详情 →</a>
-          ${a.pdfLink ? `<a class="da-link" href="${a.pdfLink}" onclick="window.open(this.href);return false;" rel="noopener">📄 PDF原文</a>` : ''}
+          <a class="da-link" href="${a.link}" target="_blank" rel="noopener">📎 巨潮公告详情 →</a>
+          ${a.pdfLink ? `<a class="da-link" href="${a.pdfLink}" target="_blank" rel="noopener">📄 PDF原文</a>` : ''}
         </div>
       </div>`;
       }).join('');
@@ -3029,8 +3029,8 @@ function applyDetailFilters() {
         <div class="da-title">${a.title}</div>
         <div class="da-ai-summary"><span class="ai-label">🤖 AI业务线索：</span>${a._summary || '常规公告，关注后续业务机会'}</div>
         <div class="da-links">
-          <a class="da-link" href="${a.link}" onclick="window.open(this.href);return false;" rel="noopener">📎 巨潮公告详情 →</a>
-          ${a.pdfLink ? `<a class="da-link" href="${a.pdfLink}" onclick="window.open(this.href);return false;" rel="noopener">📄 PDF原文</a>` : ''}
+          <a class="da-link" href="${a.link}" target="_blank" rel="noopener">📎 巨潮公告详情 →</a>
+          ${a.pdfLink ? `<a class="da-link" href="${a.pdfLink}" target="_blank" rel="noopener">📄 PDF原文</a>` : ''}
         </div>
       </div>`;
       }).join('');
@@ -3397,8 +3397,8 @@ function showAnnouncePopup(a) {
 
       <!-- Actions -->
       <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-        <a class="as-action-btn" href="${a.link}" onclick="window.open(this.href);return false;" rel="noopener">📎 查看巨潮公告原文</a>
-        ${a.pdfLink ? `<a class="as-action-btn" href="${a.pdfLink}" onclick="window.open(this.href);return false;" rel="noopener" style="border-color:#0ea5e9;color:#0ea5e9;">📄 下载PDF原文</a>` : ''}
+        <a class="as-action-btn" href="${a.link}" target="_blank" rel="noopener">📎 查看巨潮公告原文</a>
+        ${a.pdfLink ? `<a class="as-action-btn" href="${a.pdfLink}" target="_blank" rel="noopener" style="border-color:#0ea5e9;color:#0ea5e9;">📄 下载PDF原文</a>` : ''}
         ${a.type === '股权激励' ? `<button class="as-action-btn as-ppt-btn" onclick="generateEquityIncentivePpt('${a.company.replace(/'/g, "\\'")}', '${a.code}')">📊 生成股权激励服务方案</button>` : ''}
         ${a.type === '员工持股' ? `<button class="as-action-btn as-ppt-btn" onclick="generateEsopPpt('${a.company.replace(/'/g, "\\'")}', '${a.code}')">📋 生成员工持股服务方案</button>` : ''}
         <button class="as-action-btn" onclick="closeDetailPanel()" style="border-color:#d0dff0;">关闭</button>
@@ -4813,7 +4813,7 @@ function loadFundPeriodAndManager(fundCode) {
 
         // 基金经理：暂无直接API，显示东方财富链接
         var mgrHtml = '<div style="font-size:12px;color:var(--text-secondary);padding:14px;text-align:center;">' +
-          '暂无基金经理数据，<a href="https://fundf10.eastmoney.com/jjjl_' + fundCode + '.html" onclick="window.open(this.href);return false;" style="color:var(--accent);text-decoration:underline;">去东方财富查看 >>></a></div>';
+          '暂无基金经理数据，<a href="https://fundf10.eastmoney.com/jjjl_' + fundCode + '.html" target="_blank" style="color:var(--accent);text-decoration:underline;">去东方财富查看 >>></a></div>';
         var mgrEl = document.getElementById('fund-manager-info');
         if (mgrEl) mgrEl.innerHTML = mgrHtml;
 
@@ -5266,7 +5266,7 @@ function generateClueReport() {
     topComp.leads.forEach(function(l) {
       if (l.cat === cat && (!latestAnn || l.date > latestAnn.date)) latestAnn = l;
     });
-    var annLink = latestAnn && latestAnn.cninfoUrl ? '<a href="'+latestAnn.cninfoUrl+'" onclick="window.open(this.href);return false;" class="clue-ann-link">'+latestAnn.title+' 🔗</a>' : (latestAnn ? latestAnn.title : '');
+    var annLink = latestAnn && latestAnn.cninfoUrl ? '<a href="'+latestAnn.cninfoUrl+'" target="_blank" class="clue-ann-link">'+latestAnn.title+' 🔗</a>' : (latestAnn ? latestAnn.title : '');
     
     html += '<div class="clue-chain" style="background:linear-gradient(120deg,#f8fbff,#eef4fc);">'
       + '<div class="ct"><a href="javascript:void(0)" onclick="clueOpenServicePlan(\''+topComp.name+'\',\''+cat.replace(/'/g,'\\\'')+'\',\''+skillName+'\')" style="color:#0a3c8c;text-decoration:none;cursor:pointer;" onmouseover="this.style.color=\'#1565c0\'" onmouseout="this.style.color=\'#0a3c8c\'">📄 '+planTitle+' ↗</a></div>'
@@ -5497,7 +5497,7 @@ function clueOpenServicePlan(companyName, cat, skillName) {
   if (catLeads.length > 0) {
     h += '<table><thead><tr><th>日期</th><th class="l">公告标题</th><th>年份</th></tr></thead><tbody>';
     catLeads.slice(0, 15).forEach(function(l) {
-      var link = l.cninfoUrl ? '<a href="' + l.cninfoUrl + '" onclick="window.open(this.href);return false;" class="ann-link">' + l.title + ' 🔗</a>' : l.title;
+      var link = l.cninfoUrl ? '<a href="' + l.cninfoUrl + '" target="_blank" class="ann-link">' + l.title + ' 🔗</a>' : l.title;
       h += '<tr><td style="white-space:nowrap">' + l.date + '</td><td class="l">' + link + '</td><td>' + l.year + '</td></tr>';
     });
     h += '</tbody></table>';
@@ -5702,7 +5702,7 @@ function generateStockInsights(d) {
   
   function makeLink(l) {
     if (!l) return '';
-    var link = l.cninfoUrl ? '<a href="'+l.cninfoUrl+'" onclick="window.open(this.href);return false;" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
+    var link = l.cninfoUrl ? '<a href="'+l.cninfoUrl+'" target="_blank" class="clue-ann-link">'+l.title+' 🔗</a>' : l.title;
     return '最近公告：'+l.date+' — '+link;
   }
   
