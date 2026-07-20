@@ -1948,7 +1948,17 @@ function initAnnouncements() {
             date: a.date,
             title: a.title,
             detail: (a.title || '').replace(/关于/g,'').replace(/股份有限公司/g,'').replace(/有限公司/g,'').substring(0,60),
-            link: 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + code + '&announcementId=' + announcementId + '&orgId=' + orgId + '&announcementTime=' + a.date,
+            link: (function() {
+              if (!announcementId) return '';
+              if (/^\d+$/.test(announcementId)) {
+                if (a.adjunctUrl) return 'https://static.cninfo.com.cn/' + a.adjunctUrl;
+                return 'https://www.cninfo.com.cn/new/disclosure/detail?stockCode=' + code + '&announcementId=' + announcementId + '&orgId=' + orgId + '&announcementTime=' + a.date;
+              }
+              if (announcementId.indexOf('AN') === 0) {
+                return 'https://data.eastmoney.com/notices/detail/' + rawCode + '/' + announcementId + '.html';
+              }
+              return 'https://www.cninfo.com.cn/new/fulltextSearch?notautosubmit=&keyWord=' + encodeURIComponent(a.title || '');
+            })(),
             pdfLink: a.adjunctUrl ? 'https://static.cninfo.com.cn/' + a.adjunctUrl : '',
           });
           count++;
@@ -2758,8 +2768,8 @@ function openDetailPanel(companyName) {
       const announcements = allAnnouncements.map(a => ({
         title: a.title,
         date: a.date,
-        link: `https://www.cninfo.com.cn/new/disclosure/detail?stockCode=${rawCode}&announcementId=${a.announcementId || ''}&orgId=${a.orgId || ''}&announcementTime=${a.date}`,
-        pdfLink: a.adjunctUrl ? `https://static.cninfo.com.cn/${a.adjunctUrl}` : '',
+        link: a._cninfoUrl || `https://www.cninfo.com.cn/new/disclosure/detail?stockCode=${rawCode}&announcementId=${a.announcementId || ''}&orgId=${a.orgId || ''}&announcementTime=${a.date}`,
+        pdfLink: a.adjunctUrl ? `https://static.cninfo.com.cn/${a.adjunctUrl}` : (a._cninfoUrl && a._cninfoUrl.includes('.pdf') ? a._cninfoUrl : ''),
         typeCode: a.typeCode || '',
         _year: a._year
       }));
