@@ -6139,12 +6139,10 @@ function buildStockReportContent(companyName) {
     var latest = latestLead(cat);
     var annLink = latest ? makeAnnLink(latest) : '';
     p.push('<div class="chain" style="background:linear-gradient(120deg,#f8fbff,#eef4fc);">');
-    p.push('<div class="ct"><a href="javascript:void(0)" onclick="var safeName=\'' + d.name.replace(/'/g,'\\\'\') + '\';var safeCat=\'' + cat.replace(/'/g,'\\\'\') + '\';clueOpenServicePlan(safeName,safeCat,\'' + sp.skill + '\')" style="color:#0a3c8c;text-decoration:none;cursor:pointer;" onmouseover="this.style.color=\''#1565c0\'" onmouseout="this.style.color=\''#0a3c8c\'">📄 ' + d.name + ' · ' + sp.title + ' ↗</a></div>');
     // isDownload removed - always show clickable links
       var safeName = d.name.replace(/'/g,'\\\'');
       var safeCat = cat.replace(/'/g,'\\\'');
       p.push('<div class="ct"><a href="javascript:void(0)" onclick="clueOpenServicePlan(\'' + safeName + '\',\'' + safeCat + '\',\'' + sp.skill + '\')" style="color:#0a3c8c;text-decoration:none;cursor:pointer;" onmouseover="this.style.color=\'#1565c0\'" onmouseout="this.style.color=\'#0a3c8c\'">📄 ' + d.name + ' · ' + sp.title + ' ↗</a></div>');
-    }
     p.push('<div class="mp">应用 <b>' + sp.skill + '</b> 框架 ｜ ' + count + '条相关公告 ｜ 最近：' + annLink + ' ｜ <span style="color:#1565c0;font-weight:600;">点击标题生成完整方案 ↗</span></div>');
     p.push('<table class="t"><thead><tr><th class="l">服务模块</th><th class="l">具体内容</th><th class="l">华泰切入点</th></tr></thead><tbody>');
     sp.rows.forEach(function(r) {
